@@ -104,6 +104,12 @@ class LitModel(lt.LightningModule):
         self.log("test/acc", self.test_acc, on_step=False, on_epoch=True, prog_bar=True)
         self.log("test/f1", self.test_f1, on_step=False, on_epoch=True, prog_bar=True)
         return {"loss": loss, "preds": preds, "targets": targets}
+    
+    def predict_step(self, batch, batch_idx: int, dataloader_idx: int = None):
+        image, label = batch
+        logits = self.forward(image)
+        preds = torch.argmax(logits, dim=1)
+        return preds
         
     def configure_optimizers(self):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.

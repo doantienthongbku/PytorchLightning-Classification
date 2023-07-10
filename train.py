@@ -33,3 +33,5 @@ trainer = lightning.Trainer(
 
 model = LitModel(lr=0.001, num_classes=2)
 trainer.fit(model, dm)
+trainer.validate(model, datamodule=dm)
+trainer.test(model, datamodule=dm)
