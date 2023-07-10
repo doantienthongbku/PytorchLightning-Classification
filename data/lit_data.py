@@ -1,10 +1,8 @@
-import lightning as lt
+import pytorch_lightning as lt
 from torch.utils.data import DataLoader
 import os
 import glob
 from torchvision import transforms
-
-# import random split function from sklearn
 from sklearn.model_selection import train_test_split
 
 from .dataset import CatDogDataset
@@ -30,11 +28,12 @@ class LitDataModule(lt.LightningDataModule):
             "prefetch_factor": self.prefetch_factor,
             "pin_memory": True,
         }
+        self._modify_transform()
     
     def setup(self, stage: str) -> None:
-        train_val_file_list = glob.glob(os.path.join(self.data_dir, "*.jpg"))
+        train_val_file_list = glob.glob(os.path.join(self.data_dir, "train", "*.jpg"))
         self.train_file_list, self.valid_file_list = train_test_split(train_val_file_list, test_size=self.split_ratio)
-        self.test_file_list = glob.glob(os.path.join(self.data_dir, "*.jpg"))
+        self.test_file_list = glob.glob(os.path.join(self.data_dir, "test", "*.jpg"))
         
         self.train_ds = CatDogDataset(file_list=self.train_file_list, transform=self.train_transform)
         self.valid_ds = CatDogDataset(file_list=self.valid_file_list, transform=self.valid_transform)
